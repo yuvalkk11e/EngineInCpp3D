@@ -14,21 +14,23 @@ Matrix::Matrix(int row, int col)
 {
 	m = row;
 	n = col;
-	pointer = new int *[m];
+	pointer = new float *[m];
 	for (int i = 0; i < m; i++)
 	{
-		pointer[i] = new int[n];
+		pointer[i] = new float[n];
+		for (int j = 0; j < n; j++)
+			pointer[i][j] = 0;
 	}
 }
 
-Matrix::Matrix(int row, int col, int values[])
+Matrix::Matrix(int row, int col, float values[])
 {
 	m = row;
 	n = col;
-	pointer = new int *[m];
+	pointer = new float *[m];
 	for (int i = 0; i < m; i++)
 	{
-		pointer[i] = new int[n];
+		pointer[i] = new float[n];
 		for (int j = 0; j < n; j++)
 		{
 			pointer[i][j] = values[i*n + j];
@@ -36,21 +38,23 @@ Matrix::Matrix(int row, int col, int values[])
 	}
 
 }
-int* Matrix:: operator [](int key)
-{
-	return pointer[key];
-}
 
 Matrix Matrix::IdentityMatrix(int len){
 	return ScalarMultiplication(len, 1);
 }
 
 
-Matrix Matrix::ScalarMultiplication(int len, int scalar){
+Matrix Matrix::ScalarMultiplication(int len, float scalar){
 	//TODO: change type of scalar to float
 	Matrix I(len, len);
-	for (int i = 0; i < len; i++) I[len][len] = scalar;
+	for (int i = 0; i < len; i++)
+		I.pointer[i][i] = scalar;
 	return I;
+}
+
+float Matrix::getValue(int row, int column) const
+{
+	return pointer[row][column];
 }
 
 void Matrix::enterValues()
@@ -76,7 +80,7 @@ void Matrix::toString()
 		}
 	}
 }
-Matrix Matrix::operator + (Matrix inMatrix)
+Matrix Matrix::operator + (Matrix inMatrix) const
 {
 	Matrix temp(m, n);
 	for (int i = 0; i < m; i++)
@@ -96,19 +100,22 @@ Matrix Matrix::operator = (Matrix inMatrix)
 	return *this;
 }
 
-Matrix Matrix::operator * (Matrix inMatrix)
+Matrix Matrix::operator * (Matrix inMatrix) const
 {
-	//Assuming next Matrix is a nx1 Matrix (inMatrix rows = opmatrix columns) Then :
-	Matrix temp(m, n);
-	for (int i = 0; i < m; i++)
+	//This functions assumes the matrix's columns number equals their rows.
+	if (m == n && inMatrix.m == inMatrix.n)
 	{
-		for (int j = 0; j < n; j++)
+		Matrix temp(m, n);
+		for (int i = 0; i < m; i++)
 		{
-			temp.pointer[i][j] = pointer[i][j] * inMatrix.pointer[0][i];
+			for (int j = 0; j < n; j++)
+			{
+				for (int k = 0; k < n; k++)
+					temp.pointer[i][j] += pointer[i][k] * inMatrix.pointer[j][k];
+			}
 		}
+		return temp;
 	}
-	//Otherwise this would only multiply the first column Vector times opmatrix. 
-	return temp;
+	//NEED TO THROW AN ERROR
+	return Matrix(3, 3);
 }
-
-//MATRIX.CPP VERSION1

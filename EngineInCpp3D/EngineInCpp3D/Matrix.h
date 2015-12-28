@@ -1,26 +1,27 @@
 #pragma once
 #include <iostream>
-#include "Vector.h"
+#include "Vector3.h"
 class Matrix
 {
 private:
-	int **pointer, m, n;
+	float **pointer;
+	int m, n;
 	Matrix();
 
 public:
 	~Matrix();
 	Matrix(int row, int col);
-	Matrix(int row, int col, int values[]);
+	Matrix(int row, int col, float values[]);
 	static Matrix IdentityMatrix(int len);
-	static Matrix ScalarMultiplication(int len, int scalar);
+	static Matrix ScalarMultiplication(int len, float scalar);
+	float getValue(int row, int column) const;
 
 	void enterValues();
 	void toString();
-	Matrix operator + (Matrix inMatrix);
-	Matrix operator = (Matrix inMatrix);
-	Matrix operator * (const Matrix inMatrix);
-//	Vector operator * (const Vector inVector);
-	int *operator [] (int i);
+	Matrix operator + (const Matrix inMatrix) const;
+	Matrix operator = (const Matrix inMatrix);
+	Matrix operator * (const Matrix inMatrix) const;
+	//float *operator [] (int i);
 };
 
 

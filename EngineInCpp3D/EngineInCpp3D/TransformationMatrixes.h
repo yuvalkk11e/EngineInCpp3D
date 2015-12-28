@@ -3,6 +3,7 @@
 class TransformationMatrixes
 {
 public:
-	Matrix rotationMatrix(double x, double y, double z);
+	static Matrix rotationMatrix(double x, double y, double z);
+	static void test();
 };
 
